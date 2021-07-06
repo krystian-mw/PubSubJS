@@ -8,7 +8,12 @@
 (function (root, factory){
     'use strict';
 
-    var PubSub = {};
+    var PubSub = {    
+        delimeter: '.',        
+        setDelimiter ( delimeter ) {
+            this.delimeter = delimeter
+        }
+    };
     root.PubSub = PubSub;
     factory(PubSub);
     // CommonJS and Node.js module support
@@ -28,16 +33,6 @@
 
 }(( typeof window === 'object' && window ) || this, function (PubSub){
     'use strict';
-    
-    PubSub.delimeter = '.'
-    
-    PubSub.setDelimiter = function ( delimeter ) {
-        PubSub.delimeter = delimeter
-    }
-    
-    PubSub.getDelimiter = function () {
-        return PubSub.delimeter
-    }
 
     var messages = {},
         lastUid = -1,
@@ -97,7 +92,7 @@
     function createDeliveryFunction( message, data, immediateExceptions ){
         return function deliverNamespaced(){
             var topic = String( message ),
-                position = topic.lastIndexOf( PubSub.getDelimeter() );
+                position = topic.lastIndexOf( PubSub.delimeter );
 
             // deliver the message as it is now
             deliverMessage(message, message, data, immediateExceptions);
@@ -105,7 +100,7 @@
             // trim the hierarchy and deliver message to each level
             while( position !== -1 ){
                 topic = topic.substr( 0, position );
-                position = topic.lastIndexOf(PubSub.getDelimeter());
+                position = topic.lastIndexOf(PubSub.delimeter);
                 deliverMessage( message, topic, data, immediateExceptions );
             }
 
@@ -123,11 +118,11 @@
     function messageHasSubscribers( message ){
         var topic = String( message ),
             found = hasDirectSubscribersFor(topic) || hasDirectSubscribersFor(ALL_SUBSCRIBING_MSG),
-            position = topic.lastIndexOf( PubSub.getDelimeter() );
+            position = topic.lastIndexOf( PubSub.delimeter );
 
         while ( !found && position !== -1 ){
             topic = topic.substr( 0, position );
-            position = topic.lastIndexOf( PubSub.getDelimeter() );
+            position = topic.lastIndexOf( PubSub.delimeter );
             found = hasDirectSubscribersFor(topic);
         }
 
