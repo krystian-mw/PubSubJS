@@ -29,14 +29,13 @@
 }(( typeof window === 'object' && window ) || this, function (PubSub){
     'use strict';
     
+    PubSub.delimeter = '.'
+    
     PubSub.setDelimiter = function ( delimeter ) {
         PubSub.delimeter = delimeter
     }
     
     PubSub.getDelimiter = function () {
-        if (!PubSub.delimeter) {
-            PubSub.setDelimeter('.')
-        }
         return PubSub.delimeter
     }
 
